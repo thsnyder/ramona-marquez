@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ramona Marquez's Website</title>
+  <link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.14/dist/full.min.css" rel="stylesheet" type="text/css" />
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <link rel="icon" type="image/png" href="favicon/favicon-96x96.png" sizes="96x96" />
+  <link rel="icon" type="image/svg+xml" href="favicon/favicon.svg" />
+  <link rel="shortcut icon" href="favicon/favicon.ico" />
+  <link rel="apple-touch-icon" sizes="180x180" href="favicon/apple-touch-icon.png" />
+  <link rel="manifest" href="favicon/site.webmanifest" />
+
+  <style>
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .fade-in {
+      animation: fadeIn 1s ease-out forwards;
+    }
+  </style>
+
+</head>
+<body class="bg-gradient-to-br from-blue-500 via-pink-400 to-orange-300 min-h-screen flex items-center justify-center p-6">
+  <!-- Avatar Home Button -->
+  <a href="/ramona-marquez" class="fixed top-4 left-4 hover:opacity-80 transition-opacity">
+    <img src="images/ramona-profile.webp" alt="Home" class="w-12 h-12 rounded-full border-2 border-white shadow-lg">
+  </a>
+
+  <div class="bg-white shadow-xl rounded-lg p-6 max-w-sm w-full text-center space-y-6 opacity-0 fade-in">
+    <!-- Profile Picture -->
+    <img src="images/dogday.jpg" alt="Profile Picture" class="rounded-full mx-auto w-48 h-48 border-4 border-purple-500">
+    
+    <!-- Short Bio -->
+    <h1 class="text-2xl font-bold text-gray-800">Dogday's Website</h1>
+    <p class="text-sm text-gray-600">Hi, welcome to my website! This is a place where I share my thoughts, ideas, and projects with you.</p>
+    
+    <!-- Buttons -->
+    <div class="space-y-4">
+      <a id="about-me" href="#about_me_modal" class="block bg-gradient-to-r from-blue-500 to-purple-500 text-white py-3 rounded-lg shadow-md font-semibold hover:opacity-90">About Me</a>
+      <a id="kawaii-cat-memory-game" href="cute-cat-memory-game.html" class="block bg-gradient-to-r from-red-400 to-orange-400 text-white py-3 rounded-lg shadow-md font-semibold hover:opacity-90">Kawaii Cat Memory Game</a>
+      <a id="where-is-toodles" href="Where-is-Toodles/index.html" class="block bg-gradient-to-r from-green-400 to-teal-400 text-white py-3 rounded-lg shadow-md font-semibold hover:opacity-90">Where is Toodles</a>
+    </div>
+  </div>
+
+  <!-- Add Modal -->
+  <dialog id="about_me_modal" class="modal">
+    <div class="modal-box">
+      <h3 class="font-bold text-lg">About Me</h3>
+      <div class="flex justify-center">
+        <img src="images/ramona-profile.webp" alt="About Me" class="w-48 h-48 object-cover my-4 mx-auto rounded-lg">
+      </div>
+      <p class="py-4">
+        Hello! I'm a kid who loves to code and create fun and interactive web experiences. I especially love to make and play games.
+      </p>
+      <div class="modal-action">
+        <button class="btn" id="closeModalBtn">Close</button>
+      </div>
+    </div>
+  </dialog>
+
+  <footer class="fixed bottom-4 w-full text-center text-sm text-gray-600">
+    <p>© 2024 Ramona Marquez</p>
+  </footer>
+
+  <!-- Add Script -->
+  <script>
+    const modal = document.getElementById('about_me_modal');
+    const closeBtn = document.getElementById('closeModalBtn');
+    const aboutMeBtn = document.getElementById('about-me');
+    
+    aboutMeBtn.addEventListener('click', (e) => {
+      e.preventDefault(); // Prevent the default anchor behavior
+      modal.showModal();
+    });
+    
+    closeBtn.addEventListener('click', () => {
+      modal.close();
+    });
+  </script>
+</body>
+</html>

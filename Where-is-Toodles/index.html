@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Where is Toodles?</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Phaser 3 -->
+    <script src="https://cdn.jsdelivr.net/npm/phaser@3.80.1/dist/phaser.min.js"></script>
+    <!-- Tone.js -->
+    <script src="https://cdn.jsdelivr.net/npm/tone@14.8.49/build/Tone.js"></script>
+</head>
+<body>
+    <!-- Home Button -->
+    <a href="../index.html" class="home-button">
+        <img src="../images/ramona-profile.webp" alt="Home">
+    </a>
+
+    <!-- Main Game Container -->
+    <div id="game-container" class="game-container">
+        <!-- Phaser Canvas will be inserted here -->
+        <div id="phaser-game"></div>
+
+        <!-- HUD (overlay on top of Phaser canvas) -->
+        <div id="hud" class="hud">
+            <div class="hud-left">
+                <div class="level-indicator">
+                    <span class="label">Level</span>
+                    <span id="level-display" class="value">1</span>
+                </div>
+                <div class="timer">
+                    <span class="label">Time</span>
+                    <span id="timer-display" class="value">30</span>
+                </div>
+            </div>
+            <div class="hud-center">
+                <div class="progress-indicator">
+                    <span class="label">Progress</span>
+                    <div class="progress-bar">
+                        <div id="progress-fill" class="progress-fill"></div>
+                    </div>
+                    <span id="progress-text" class="progress-text">1 / 3</span>
+                </div>
+            </div>
+            <div class="hud-right">
+                <div class="infection-meter">
+                    <span class="label">Infection</span>
+                    <div class="meter-bar">
+                        <div id="infection-bar" class="meter-fill"></div>
+                    </div>
+                    <span id="infection-stage" class="stage">Normal</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- UI Overlays -->
+        <!-- Explainer Modal (shown first) -->
+        <div id="explainer-modal" class="overlay explainer-modal">
+            <div class="overlay-content explainer-content">
+                <h2 class="explainer-title">Where is Toodles?</h2>
+                <div class="explainer-text">
+                    <p>Toodles is lost in an attic, and she needs your help.</p>
+                    <p>Use your flashlight to search through the darkness and find her before time runs out.</p>
+                    <p class="warning-text">If you don't find her in time, she will become more infected...</p>
+                </div>
+                <button id="got-it-btn" class="btn btn-primary">Got it</button>
+            </div>
+        </div>
+
+        <div id="menu-overlay" class="overlay menu-overlay hidden">
+            <div class="overlay-content">
+                <h1 class="game-title">Where is Toodles?</h1>
+                <p class="game-subtitle">Find her before time runs out...</p>
+                <button id="start-btn" class="btn btn-primary">Start Game</button>
+                <div class="menu-options">
+                    <button id="mute-btn" class="btn btn-secondary">🔊 Sound On</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="found-overlay" class="overlay found-overlay hidden">
+            <div class="overlay-content">
+                <h2 class="found-title">Congratulations!</h2>
+                <p class="found-subtitle">You found Toodles!</p>
+            </div>
+        </div>
+
+        <!-- Success Screen with Toodles and Speech Bubble -->
+        <div id="success-screen" class="overlay success-screen hidden">
+            <div class="success-content">
+                <div class="speech-bubble">
+                    <p class="speech-text">Yay! You found me!</p>
+                </div>
+                <div id="success-toodles-container" class="success-toodles-container">
+                    <!-- Toodles will be rendered here by Phaser -->
+                </div>
+            </div>
+        </div>
+
+        <div id="lose-overlay" class="overlay lose-overlay hidden">
+            <div class="overlay-content">
+                <h2 class="lose-title">uh oh</h2>
+                <p id="toodles-question" class="toodles-question">toodles?</p>
+                <p id="lose-text" class="lose-text">its too late</p>
+                <button id="restart-btn" class="btn btn-primary">Try Again</button>
+            </div>
+        </div>
+
+        <!-- Horror Text Flavor -->
+        <div id="horror-text" class="horror-text hidden"></div>
+
+        <!-- Win Screen (after all levels) -->
+        <div id="win-overlay" class="overlay win-overlay hidden">
+            <div class="overlay-content">
+                <h2 class="win-title">Congratulations!</h2>
+                <p class="win-text">You found Toodles in time!</p>
+                <button id="play-again-btn" class="btn btn-primary">Play Again</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="game.js"></script>
+</body>
+</html>
+

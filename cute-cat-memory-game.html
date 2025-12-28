@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cat Memory Game</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Modak&family=Space+Grotesk:wght@300..700&display=swap" rel="stylesheet">
+
+<!-- Open Graph Meta Tags -->
+<meta property="og:title" content="Cat Memory Game">
+<meta property="og:description" content="A fun memory game featuring adorable cats. Match pairs of cats to win!">
+<meta property="og:image" content="https://thsnyder.github.io/cat-memory-game/Cute-Cat-Memory-Game-OG.png">
+<meta property="og:url" content="https://thsnyder.github.io/cat-memory-game/">
+<meta property="og:type" content="website">
+
+<!-- Additional recommended tags -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image:alt" content="Cat Memory Game Preview">
+
+
+    <style>
+        .transform-style-preserve-3d {
+            transform-style: preserve-3d;
+        }
+        .card-front, .card-back {
+            backface-visibility: hidden;
+        }
+        .card-back {
+            transform: rotateY(180deg);
+        }
+        .modak {
+            font-family: 'Modak', cursive;
+        }
+        .floating-cat {
+            position: fixed;
+            pointer-events: none;
+            opacity: 0.4;
+            z-index: -1;
+            animation: float 15s linear infinite;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+            }
+            100% {
+                transform: translateY(-100px) rotate(360deg);
+            }
+        }
+        @keyframes matchAnimation {
+        0% {
+            transform: scale(1);
+            opacity: 1;
+        }
+        50% {
+            transform: scale(1.1);
+            opacity: 1;
+            filter: brightness(1.5) saturate(1.5);
+        }
+        100% {
+            transform: scale(0);
+            opacity: 0;
+        }
+    }
+
+    .sparkle {
+        position: absolute;
+        pointer-events: none;
+        width: 10px;
+        height: 10px;
+        background: white;
+        border-radius: 50%;
+        animation: sparkle 0.8s linear forwards;
+    }
+
+    @keyframes sparkle {
+        0% {
+            transform: translate(0, 0) scale(0);
+            opacity: 1;
+        }
+        100% {
+            transform: translate(var(--tx), var(--ty)) scale(1);
+            opacity: 0;
+        }
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .fade-in {
+        animation: fadeIn 1s ease-out forwards;
+    }
+    </style>
+</head>
+<body class="bg-gradient-to-r from-teal-400 to-fuchsia-400 min-h-screen p-8">
+    <div id="floating-cats"></div>
+
+      <!-- Avatar Home Button -->
+  <a href="/ramona-marquez" class="fixed top-4 left-4 hover:opacity-80 transition-opacity">
+    <img src="images/ramona-profile.webp" alt="Home" class="w-12 h-12 rounded-full border-2 border-white shadow-lg">
+  </a>
+
+    <div class="max-w-4xl mx-auto opacity-0 fade-in">
+        <h1 class="text-6xl md:text-8xl modak text-center mb-8 text-gray-800">Cat Memory Game</h1>
+        <div class="mb-4 text-center">
+            <p class="text-xl text-black">Moves: <span id="moves">0</span></p>
+            <button id="resetBtn" class="mt-2 bg-violet-500 text-black px-4 py-2 border-4 border-violet-800 rounded hover:bg-violet-600">Reset Game</button>
+        </div>
+        <div id="gameBoard" class="grid grid-cols-4 gap-4">
+            <!-- Cards will be inserted here -->
+        </div>
+    </div>
+
+    <div id="winModal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center">
+        <div class="bg-white rounded-lg p-8 max-w-sm mx-4 text-center transform transition-all">
+            <h2 class="text-3xl modak text-gray-800 mb-4">Congratulations!</h2>
+            <p class="text-xl mb-6">You won in <span id="finalMoves">0</span> moves!</p>
+            <button onclick="closeModal()" class="bg-violet-500 text-black px-4 py-2 border-4 border-violet-800 rounded hover:bg-violet-600">
+                Play Again
+            </button>
+        </div>
+    </div>
+
+    <script>
+        const gameBoard = document.getElementById('gameBoard');
+        const movesDisplay = document.getElementById('moves');
+        const resetBtn = document.getElementById('resetBtn');
+        let moves = 0;
+        let flippedCards = [];
+        let matchedPairs = 0;
+        let catImages = [];
+
+        // Create array of cat IDs (we'll use numbers to fetch different cats)
+        const catIds = [...Array(8)].map((_, i) => i + 1);
+        const cards = [...catIds, ...catIds];
+
+        // Add this function to load the JSON before initializing the game
+        async function loadCatImages() {
+    try {
+        const response = await fetch('cats.json');
+        const data = await response.json();
+        console.log('Loaded cat images:', data); // Add this line
+        catImages = data.catImages;
+        initGame();
+    } catch (error) {
+        console.error('Error loading cat images:', error);
+    }
+}
+
+        function shuffleCards(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        // Modify the createCard function:
+function createCard(imageUrl, index) {
+    const card = document.createElement('div');
+    card.className = 'aspect-square bg-white rounded-lg shadow cursor-pointer transform transition-transform duration-300 hover:scale-105';
+    card.innerHTML = `
+        <div class="card-inner w-full h-full relative transform-style-preserve-3d transition-transform duration-500">
+            <div class="card-front absolute w-full h-full bg-violet-500 border-4 border-violet-800 rounded-lg"></div>
+            <div class="card-back absolute w-full h-full rounded-lg">
+                <img src="${imageUrl}" 
+                     class="w-full h-full object-cover rounded-lg" 
+                     alt="cat"
+                     loading="lazy">
+            </div>
+        </div>
+    `;
+    card.dataset.id = imageUrl;
+    card.dataset.index = index;
+    
+    card.addEventListener('click', () => flipCard(card));
+    return card;
+}
+
+        function flipCard(card) {
+            if (flippedCards.length === 2 || flippedCards.includes(card) || card.classList.contains('matched')) {
+                return;
+            }
+
+            card.querySelector('.card-inner').style.transform = 'rotateY(180deg)';
+            flippedCards.push(card);
+
+            if (flippedCards.length === 2) {
+                moves++;
+                movesDisplay.textContent = moves;
+                checkMatch();
+            }
+        }
+
+        // Add this new function to create sparkles
+    function createSparkles(element) {
+        const rect = element.getBoundingClientRect();
+        for (let i = 0; i < 10; i++) {
+            const sparkle = document.createElement('div');
+            sparkle.className = 'sparkle';
+            // Random position within the card
+            sparkle.style.left = rect.left + Math.random() * rect.width + 'px';
+            sparkle.style.top = rect.top + Math.random() * rect.height + 'px';
+            // Random direction for the sparkle to fly
+            sparkle.style.setProperty('--tx', (Math.random() * 100 - 50) + 'px');
+            sparkle.style.setProperty('--ty', (Math.random() * 100 - 50) + 'px');
+            document.body.appendChild(sparkle);
+            // Remove sparkle after animation
+            setTimeout(() => sparkle.remove(), 2000);
+        }
+    }
+
+        // Modify the checkMatch function
+    function checkMatch() {
+        const [card1, card2] = flippedCards;
+        const match = card1.dataset.id === card2.dataset.id;
+
+        if (match) {
+            card1.classList.add('matched');
+            card2.classList.add('matched');
+            matchedPairs++;
+
+            // Add match animation
+            [card1, card2].forEach(card => {
+                createSparkles(card);
+                card.style.animation = 'matchAnimation 1s forwards';
+            });
+
+            flippedCards = [];
+
+            if (matchedPairs === catImages.length) {
+                setTimeout(() => {
+                    document.getElementById('finalMoves').textContent = moves;
+                    document.getElementById('winModal').classList.remove('hidden');
+                }, 1000);
+            }
+        } else {
+            setTimeout(() => {
+                card1.querySelector('.card-inner').style.transform = '';
+                card2.querySelector('.card-inner').style.transform = '';
+                flippedCards = [];
+            }, 1000);
+        }
+    }
+
+        function createFloatingCats() {
+            const container = document.getElementById('floating-cats');
+            const numberOfCats = 8;
+
+            for (let i = 0; i < numberOfCats; i++) {
+                const cat = document.createElement('img');
+                cat.src = 'images/crown-cat-head.png';
+                cat.className = 'floating-cat';
+                cat.style.width = Math.random() * (100 - 40) + 40 + 'px'; // Random size between 40px and 100px
+                cat.style.left = Math.random() * 100 + 'vw';
+                cat.style.animationDuration = (Math.random() * 10 + 10) + 's'; // Random duration between 10-20s
+                cat.style.animationDelay = (Math.random() * 10) + 's'; // Random delay up to 10s
+                container.appendChild(cat);
+            }
+        }
+
+        // Modify the initGame function:
+    function initGame() {
+    gameBoard.innerHTML = '';
+    moves = 0;
+    matchedPairs = 0;
+    flippedCards = [];
+    movesDisplay.textContent = moves;
+
+    const cards = [...catImages, ...catImages];
+    const shuffledCards = shuffleCards(cards);
+    shuffledCards.forEach((imageUrl, index) => {
+        gameBoard.appendChild(createCard(imageUrl, index));
+    });
+}
+
+        // Replace the final lines:
+    resetBtn.addEventListener('click', initGame);
+    window.addEventListener('load', createFloatingCats);
+
+loadCatImages(); // Instead of initGame()
+    </script>
+    
+<footer class="bg-violet-500 bg-opacity-90 w-full mt-8 text-center p-6 text-white shadow-lg rounded-lg">
+    <p class="text-base font-medium">
+        Created with <span class="animate-pulse">🐱</span> by 
+        <a href="index.html" class="font-bold hover:text-violet-200 transition-colors duration-300">DD</a>
+        & 
+        <a href="https://github.com/thsnyder" class="font-bold hover:text-violet-200 transition-colors duration-300" target="_blank" rel="noopener noreferrer">Tom</a>
+    </p>
+</footer>
+</body>
+</html>

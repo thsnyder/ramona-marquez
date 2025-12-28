@@ -1,0 +1,644 @@
+/* ============================================
+   WHERE IS TOODLES? - STYLES
+   ============================================ */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Courier New', monospace;
+    overflow: hidden;
+    background: #0a0a0a;
+    color: #e0e0e0;
+    cursor: none; /* Hide default cursor for flashlight effect */
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: none;
+}
+
+/* ============================================
+   HOME BUTTON
+   ============================================ */
+
+.home-button {
+    position: fixed;
+    top: 15px;
+    left: 15px;
+    z-index: 500;
+    display: block;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+    overflow: hidden;
+    transition: opacity 0.3s ease, transform 0.2s ease;
+    cursor: pointer;
+}
+
+.home-button:hover {
+    opacity: 0.8;
+    transform: scale(1.1);
+    border-color: rgba(255, 255, 255, 0.6);
+}
+
+.home-button img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+/* ============================================
+   GAME CONTAINER
+   ============================================ */
+
+.game-container {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    background: #1a1a1a;
+}
+
+/* Phaser Canvas Container */
+#phaser-game {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+}
+
+#phaser-game canvas {
+    display: block;
+    width: 100% !important;
+    height: 100% !important;
+}
+
+/* ============================================
+   HUD (Heads-Up Display)
+   ============================================ */
+
+.hud {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    display: flex;
+    justify-content: space-between;
+    padding: 15px 20px 15px 75px; /* Extra left padding to accommodate home button */
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.hud-left, .hud-center, .hud-right {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+}
+
+.hud-center {
+    flex: 1;
+    justify-content: center;
+    max-width: 300px;
+    margin: 0 auto;
+}
+
+.level-indicator, .timer {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.label {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    opacity: 0.7;
+}
+
+.value {
+    font-size: 18px;
+    font-weight: bold;
+    color: #fff;
+}
+
+/* Make timer more obvious */
+.timer .value {
+    font-size: 32px;
+    font-weight: bold;
+    color: #fff;
+    text-shadow: 
+        0 0 10px rgba(255, 255, 255, 0.8),
+        0 0 20px rgba(255, 255, 255, 0.5);
+    transition: all 0.3s ease;
+}
+
+.timer .value.warning {
+    color: #ff6b6b;
+    text-shadow: 
+        0 0 10px rgba(255, 107, 107, 0.8),
+        0 0 20px rgba(255, 107, 107, 0.5);
+    animation: pulse 1s infinite;
+}
+
+.timer .value.critical {
+    color: #ff0000;
+    text-shadow: 
+        0 0 15px rgba(255, 0, 0, 1),
+        0 0 30px rgba(255, 0, 0, 0.8);
+    animation: pulse-fast 0.5s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+}
+
+@keyframes pulse-fast {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.15); }
+}
+
+.infection-meter {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 150px;
+}
+
+.meter-bar {
+    width: 100%;
+    height: 8px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    overflow: hidden;
+    position: relative;
+}
+
+.meter-fill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, #4a9eff 0%, #9b59b6 50%, #e74c3c 100%);
+    transition: width 0.3s ease, background 0.3s ease;
+    border-radius: 4px;
+}
+
+.stage {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    opacity: 0.8;
+}
+
+.progress-indicator {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 200px;
+    align-items: center;
+}
+
+.progress-bar {
+    width: 100%;
+    height: 10px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 5px;
+    overflow: hidden;
+    position: relative;
+}
+
+.progress-fill {
+    height: 100%;
+    width: 33.33%;
+    background: linear-gradient(90deg, #4a9eff 0%, #9b59b6 100%);
+    transition: width 0.5s ease;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(74, 158, 255, 0.5);
+}
+
+.progress-text {
+    font-size: 12px;
+    font-weight: bold;
+    color: #fff;
+    text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+    margin-top: 2px;
+}
+
+/* ============================================
+   VISUAL EFFECTS (Handled by Phaser shaders)
+   ============================================ */
+
+/* Film grain and vignette will be rendered via Phaser post-processing */
+
+/* ============================================
+   OVERLAYS (MENU, FOUND, LOSE, WIN)
+   ============================================ */
+
+.overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 200;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(4px);
+}
+
+.menu-overlay {
+    background: rgba(0, 0, 0, 0.6); /* More transparent so Toodles shows through */
+    backdrop-filter: none; /* No blur so Toodles is crystal clear */
+}
+
+.overlay.hidden {
+    display: none;
+}
+
+.overlay-content {
+    text-align: center;
+    padding: 40px;
+    background: rgba(10, 10, 10, 0.9);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+    max-width: 500px;
+}
+
+.menu-overlay .overlay-content {
+    background: rgba(10, 10, 10, 0.85); /* Slightly more transparent for menu */
+}
+
+/* Explainer Modal */
+.explainer-modal {
+    z-index: 400; /* Above menu overlay */
+    background: rgba(0, 0, 0, 0.9);
+    backdrop-filter: blur(5px);
+}
+
+.explainer-content {
+    background: rgba(20, 10, 20, 0.95);
+    max-width: 600px;
+    padding: 40px;
+}
+
+.explainer-title {
+    font-size: 42px;
+    margin-bottom: 25px;
+    text-shadow: 0 0 20px rgba(155, 89, 182, 0.5);
+    letter-spacing: 1px;
+    color: #9b59b6;
+}
+
+.explainer-text {
+    font-size: 18px;
+    line-height: 1.8;
+    margin-bottom: 30px;
+    color: #e0e0e0;
+}
+
+.explainer-text p {
+    margin-bottom: 15px;
+}
+
+.explainer-text p:last-child {
+    margin-bottom: 0;
+}
+
+.warning-text {
+    color: #e74c3c;
+    font-weight: bold;
+    text-shadow: 0 0 10px rgba(231, 76, 60, 0.5);
+    font-size: 20px;
+}
+
+.game-title {
+    font-size: 48px;
+    margin-bottom: 10px;
+    text-shadow: 0 0 20px rgba(155, 89, 182, 0.5);
+    letter-spacing: 2px;
+}
+
+.game-subtitle {
+    font-size: 16px;
+    margin-bottom: 30px;
+    opacity: 0.8;
+    font-style: italic;
+}
+
+.found-title {
+    font-size: 36px;
+    margin-bottom: 10px;
+    color: #4a9eff;
+    text-shadow: 0 0 20px rgba(74, 158, 255, 0.5);
+}
+
+.found-subtitle {
+    font-size: 18px;
+    opacity: 0.7;
+    font-style: italic;
+}
+
+/* Success Screen with Toodles */
+.success-screen {
+    background: rgba(0, 0, 0, 0.3); /* Much more transparent - remove overlay effect */
+    z-index: 300;
+    backdrop-filter: none; /* No blur so Toodles is clear */
+}
+
+.success-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 340px; /* Gap between speech bubble and Toodles (40px + 300px) */
+    justify-content: flex-start;
+    padding-top: 100px; /* Move content higher up on screen */
+}
+
+.success-toodles-container {
+    width: 200px;
+    height: 200px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    order: 2; /* Ensure it appears after speech bubble */
+}
+
+.speech-bubble {
+    position: relative;
+    background: #fff;
+    border-radius: 20px;
+    padding: 20px 30px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+    max-width: 300px;
+    animation: bubblePop 0.5s ease-out;
+    margin-bottom: 20px; /* Extra space above Toodles */
+    order: 1; /* Ensure it appears first */
+}
+
+.speech-bubble::before {
+    content: '';
+    position: absolute;
+    bottom: -15px; /* Points downward toward Toodles */
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 15px solid transparent;
+    border-right: 15px solid transparent;
+    border-top: 15px solid #fff; /* Points downward */
+}
+
+.speech-text {
+    font-size: 24px;
+    font-family: 'Courier New', monospace;
+    color: #333;
+    margin: 0;
+    text-align: center;
+    font-weight: bold;
+}
+
+@keyframes bubblePop {
+    0% {
+        transform: scale(0);
+        opacity: 0;
+    }
+    50% {
+        transform: scale(1.1);
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+.lose-title {
+    font-size: 42px;
+    margin-bottom: 15px;
+    color: #e74c3c;
+    text-shadow: 0 0 20px rgba(231, 76, 60, 0.5);
+}
+
+.toodles-question {
+    font-size: 32px;
+    margin-bottom: 15px;
+    opacity: 0.9;
+    color: #fff;
+    font-style: italic;
+    text-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+}
+
+.lose-text {
+    font-size: 16px;
+    margin-bottom: 30px;
+    opacity: 0.8;
+}
+
+.win-overlay {
+    background: rgba(0, 0, 0, 0.3); /* More transparent so confetti shows through */
+    backdrop-filter: blur(2px); /* Less blur */
+}
+
+.win-title {
+    font-size: 48px;
+    margin-bottom: 15px;
+    color: #4a9eff;
+    text-shadow: 
+        0 0 20px rgba(74, 158, 255, 0.8),
+        0 0 40px rgba(74, 158, 255, 0.5);
+    font-weight: bold;
+    animation: winPulse 2s ease-in-out infinite;
+}
+
+@keyframes winPulse {
+    0%, 100% {
+        transform: scale(1);
+        text-shadow: 
+            0 0 20px rgba(74, 158, 255, 0.8),
+            0 0 40px rgba(74, 158, 255, 0.5);
+    }
+    50% {
+        transform: scale(1.05);
+        text-shadow: 
+            0 0 30px rgba(74, 158, 255, 1),
+            0 0 60px rgba(74, 158, 255, 0.8);
+    }
+}
+
+.win-text {
+    font-size: 16px;
+    margin-bottom: 30px;
+    opacity: 0.8;
+    font-style: italic;
+}
+
+/* ============================================
+   BUTTONS
+   ============================================ */
+
+.btn {
+    padding: 12px 24px;
+    font-size: 16px;
+    font-family: 'Courier New', monospace;
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    color: #fff;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin: 5px;
+}
+
+.btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.5);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.btn:active {
+    transform: translateY(0);
+}
+
+.btn-primary {
+    background: rgba(155, 89, 182, 0.3);
+    border-color: rgba(155, 89, 182, 0.6);
+}
+
+.btn-primary:hover {
+    background: rgba(155, 89, 182, 0.5);
+    border-color: rgba(155, 89, 182, 0.8);
+}
+
+.btn-secondary {
+    font-size: 14px;
+    padding: 8px 16px;
+}
+
+.menu-options {
+    margin-top: 20px;
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+/* ============================================
+   HORROR TEXT FLAVOR
+   ============================================ */
+
+.horror-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 150;
+    font-size: 24px;
+    color: rgba(255, 255, 255, 0.6);
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+    font-style: italic;
+    pointer-events: none;
+    animation: fadeInOut 3s ease;
+}
+
+.horror-text.hidden {
+    display: none;
+}
+
+@keyframes fadeInOut {
+    0%, 100% { opacity: 0; transform: translate(-50%, -50%) translateY(10px); }
+    20%, 80% { opacity: 1; transform: translate(-50%, -50%) translateY(0); }
+}
+
+/* ============================================
+   INFECTION STAGE EFFECTS
+   ============================================ */
+
+.game-container.stage-worried {
+    filter: hue-rotate(10deg) saturate(1.1);
+}
+
+.game-container.stage-sad {
+    filter: brightness(0.7) contrast(1.2);
+}
+
+.game-container.stage-takeover {
+    filter: hue-rotate(180deg) saturate(1.5) brightness(0.8);
+    animation: glitch 0.3s infinite;
+}
+
+@keyframes glitch {
+    0%, 100% { transform: translate(0); }
+    20% { transform: translate(-2px, 2px); }
+    40% { transform: translate(-2px, -2px); }
+    60% { transform: translate(2px, 2px); }
+    80% { transform: translate(2px, -2px); }
+}
+
+/* ============================================
+   RESPONSIVE DESIGN
+   ============================================ */
+
+@media (max-width: 768px) {
+    .hud {
+        padding: 10px 15px 10px 70px; /* Extra left padding to accommodate home button */
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .hud-left, .hud-right {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .game-title {
+        font-size: 32px;
+    }
+
+    .overlay-content {
+        padding: 30px 20px;
+        margin: 20px;
+    }
+
+    .flashlight {
+        width: 250px;
+        height: 250px;
+    }
+
+    .toodles {
+        width: 35px;
+        height: 35px;
+    }
+}
+
+@media (max-width: 480px) {
+    .game-title {
+        font-size: 24px;
+    }
+
+    .found-title, .lose-title, .win-title {
+        font-size: 28px;
+    }
+
+    .flashlight {
+        width: 200px;
+        height: 200px;
+    }
+
+    .toodles {
+        width: 30px;
+        height: 30px;
+    }
+}
+
